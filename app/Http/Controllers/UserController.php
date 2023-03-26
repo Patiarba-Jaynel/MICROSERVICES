@@ -35,8 +35,7 @@ class userController extends Controller
     public function addUser(Request $request){
         $rules = [
             'username' => 'required | max:20',
-            'password' => 'required | max:20',
-            'address' => 'required | max:50'
+            'password' => 'required | max:20'
         ];
 
         $this->validate($request, $rules);
