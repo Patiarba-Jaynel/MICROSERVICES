@@ -26,17 +26,20 @@ class userController extends Controller
 
 
     public function showUser($id) {
-        $user = User::findOrFail($id);
 
+        try{
+        $user = User::findOrFail($id);
         return response()->json($user);
+    } catch (\Exception $exception ) {
+        return response()->json('{"error":"User Not Found"}', 404);
+    }
 
     }
 
     public function addUser(Request $request){
         $rules = [
             'username' => 'required | max:20',
-            'password' => 'required | max:20',
-            'address' => 'required | max:50'
+            'password' => 'required | max:20'
         ];
 
         $this->validate($request, $rules);
@@ -44,6 +47,35 @@ class userController extends Controller
         $user = User::create($request->all());
 
         return response()->json($user, 201);
+    }
+
+    public function deleteUser($id) {
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return response()->json($user, 200);
+    }
+
+    public function updateUser(Request $request, $id) {
+        $rules = [
+            'username' => 'required | max:20',
+            'password' => 'required | max:20'
+        ];
+
+        $this->validate($request, $rules);
+
+        $user = User::findOrFail($id);
+
+        $user->fill($request->all());
+
+        if ($user->isClean()) {
+            return response()->json("User not found", 404);
+        } else {
+            $user->save();
+            return response()->json($user, 200);
+        }
+
     }
     
 }
