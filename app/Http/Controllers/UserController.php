@@ -69,8 +69,11 @@ class userController extends Controller
 
         $user->fill($request->all());
 
+        //dd($user);
+
         if ($user->isClean()) {
-            return response()->json("User not found", 404);
+            return response()->json("At least one value must
+            change", 403);
         } else {
             $user->save();
             return response()->json($user, 200);
